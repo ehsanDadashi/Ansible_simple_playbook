@@ -1,0 +1,40 @@
+---
+- name: Install Nginx and publish HTML on Rocky Linux 9
+  hosts: webservers
+  become: yes  # برای استفاده از دسترسی root (sudo)
+  tasks:
+    
+    - name: Install Nginx
+      dnf:
+        name: nginx
+        state: present
+
+    - name: Ensure Nginx service is started and enabled
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Create a simple HTML file
+      copy:
+        dest: /usr/share/nginx/html/index.html
+        content: |
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>Welcome to my first ansible Nginx</title>
+          </head>
+          <body>
+              <h1>Hello, world!</h1>
+              <p>This is a simple HTML page served by Nginx on Rocky Linux 9.</p>
+              <p>ansible done!</p>
+          </body>
+          </html>
+
+    - name: Ensure correct file permissions
+      file:
+        path: /usr/share/nginx/html/index.html
+        owner: nginx
+        group: nginx
+        mode: '0644'
+
